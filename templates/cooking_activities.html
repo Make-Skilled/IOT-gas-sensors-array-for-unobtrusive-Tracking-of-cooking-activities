@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cooking Activities - Smart Kitchen Monitor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="page-header">
+            <h1>Smart Kitchen Monitor</h1>
+            <nav class="main-nav">
+                <a href="/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="/cooking_activities" class="nav-link active">
+                    <i class="fas fa-utensils"></i>
+                    Cooking Activities
+                </a>
+            </nav>
+        </header>
+
+        <div class="cooking-section">
+            <h2>Start New Cooking Activity</h2>
+            <div class="add-activity-form">
+                <form id="activityForm" onsubmit="return addActivity(event)">
+                    <div class="form-container">
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="recipe_type">Recipe Type</label>
+                                <select name="recipe_type" id="recipe_type" onchange="updateRecipeInfo()" required>
+                                    <option value="">-- Select Recipe --</option>
+                                    {% for recipe_id, guide in cooking_guides.items() %}
+                                    <option value="{{ recipe_id }}">{{ guide.name }}</option>
+                                    {% endfor %}
+                                    <option value="custom">Custom Recipe</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="dish_name">Dish Name</label>
+                                <input type="text" name="dish_name" id="dish_name" placeholder="Enter dish name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row two-columns">
+                            <div class="form-group">
+                                <label for="cooking_time">Cooking Time</label>
+                                <div class="input-with-unit">
+                                    <input type="number" name="cooking_time" id="cooking_time" min="1" max="240" placeholder="Enter time" required>
+                                    <span class="unit">minutes</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="temperature">Temperature</label>
+                                <div class="input-with-unit">
+                                    <input type="number" name="temperature" id="temperature" min="0" max="300" placeholder="Enter temperature" required>
+                                    <span class="unit">°C</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="recipe_info" class="recipe-info hidden">
+                        <div class="recipe-details">
+                            <div class="recommended-values">
+                                <p class="recommended-temp">Recommended Temperature: <span id="recommended_temp">--</span>°C</p>
+                                <p class="recommended-time">Recommended Time: <span id="recommended_time">--</span> minutes</p>
+                            </div>
+                            <div class="cooking-tips">
+                                <h4>Cooking Tips:</h4>
+                                <p id="cooking_tips">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="primary-btn">Start Cooking</button>
+                </form>
+            </div>
+
+            <div class="activities-container">
+                <h2>Active Cooking Sessions</h2>
+                <div class="activities-grid">
+                    {% for activity in activities %}
+                    <div class="activity-card {% if activity.status == 'Completed' %}completed{% endif %}">
+                        <div class="activity-header">
+                            <h4>{{ activity.dish_name }}</h4>
+                            <span class="activity-status">{{ activity.status }}</span>
+                        </div>
+                        <div class="activity-details">
+                            <div class="cooking-info">
+                                <p><strong>Cooking Time:</strong> {{ activity.cooking_time }} minutes</p>
+                                <p><strong>Temperature:</strong> {{ activity.temperature }}°C</p>
+                                <p class="timestamp"><strong>Started:</strong> {{ activity.timestamp }}</p>
+                            </div>
+                            
+                            {% if activity.instructions %}
+                            <div class="cooking-steps">
+                                <h5>Cooking Steps:</h5>
+                                <ul>
+                                    {% for instruction in activity.instructions %}
+                                    <li class="{% if loop.index0 <= activity.current_step %}completed-step{% endif %}">
+                                        <span class="step-number">{{ loop.index }}.</span>
+                                        <span class="step-text">{{ instruction }}</span>
+                                        {% if loop.index0 == activity.current_step and activity.status != 'Completed' %}
+                                        <button onclick="updateStep({{ loop.index0 }}, {{ loop.index0 + 1 }})" 
+                                                class="step-btn">Complete Step</button>
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            
+                            {% if activity.tips %}
+                            <div class="cooking-tips">
+                                <h5>Tips:</h5>
+                                <p>{{ activity.tips }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% if activity.status != 'Completed' %}
+                        <button onclick="completeActivity({{ loop.index0 }})" class="complete-btn">Mark as Complete</button>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/cooking_activities.js') }}"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

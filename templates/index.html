@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Kitchen Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Smart Kitchen Monitoring System</h1>
+            <nav class="main-nav">
+                <a href="/" class="nav-link active">Dashboard</a>
+                <a href="/cooking_activities" class="nav-link">Cooking Activities</a>
+            </nav>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="project-overview">
+                <h2>Project Overview</h2>
+                <div class="overview-grid">
+                    <div class="info-card">
+                        <h3>About</h3>
+                        <p>Smart Kitchen Monitoring System is an IoT-based solution that helps you manage and monitor your cooking activities efficiently. It combines hardware sensors with a user-friendly web interface for a seamless cooking experience.</p>
+                    </div>
+
+                    <div class="info-card features">
+                        <h3>Key Features</h3>
+                        <ul>
+                            <li>Real-time temperature monitoring</li>
+                            <li>Gas leak detection system</li>
+                            <li>Recipe management</li>
+                            <li>Step-by-step cooking guides</li>
+                            <li>Activity tracking</li>
+                            <li>Safety alerts and notifications</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card hardware">
+                        <h3>Hardware Components</h3>
+                        <ul>
+                            <li>Arduino Microcontroller</li>
+                            <li>Temperature Sensor (DS18B20)</li>
+                            <li>Gas Sensor (MQ-2)</li>
+                            <li>LCD Display</li>
+                            <li>Keypad Interface</li>
+                            <li>Servo Motor</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card recipes">
+                        <h3>Available Recipes</h3>
+                        <div class="recipe-list">
+                            {% for recipe_id, guide in cooking_guides.items() %}
+                            <div class="recipe-item">
+                                <span class="recipe-name">{{ guide.name }}</span>
+                                <span class="recipe-time">{{ guide.cooking_time }} mins</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h2>Quick Actions</h2>
+                <div class="action-buttons">
+                    <a href="/cooking_activities" class="action-btn">
+                        <span class="action-icon">🍳</span>
+                        <span class="action-text">Start Cooking</span>
+                    </a>
+                    <a href="/cooking_activities" class="action-btn">
+                        <span class="action-icon">📋</span>
+                        <span class="action-text">View Activities</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="system-status">
+                <h2>System Information</h2>
+                <div class="status-grid">
+                    <div class="status-card">
+                        <h4>System Status</h4>
+                        <p class="status-indicator active">Online</p>
+                    </div>
+                    <div class="status-card">
+                        <h4>Last Updated</h4>
+                        <p class="update-time">{{ current_time }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
