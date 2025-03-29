@@ -6,6 +6,8 @@ from werkzeug.utils import secure_filename
 import os
 import hashlib
 from datetime import datetime
+from threading import Thread
+from gas_monitor import monitor_gas_levels
 
 app=Flask(__name__)
 app.secret_key="M@keskilled0"
@@ -207,5 +209,10 @@ def cooking_activities():
                          cooking_guides=COOKING_GUIDES,
                          activities=ACTIVE_ACTIVITIES)
 
-if __name__=="__main__":
-    app.run(host='0.0.0.0',port=4001,debug=True)
+if __name__ == "__main__":
+    # Start the monitoring in a separate thread
+    monitor_thread = Thread(target=monitor_gas_levels, daemon=True)
+    monitor_thread.start()
+    
+    # Start Flask app
+    app.run(debug=True)
